@@ -46,6 +46,10 @@ app.use('/auth', authRouter);
 const booksRouter = require('./routes/books');
 app.use('/books', booksRouter);
 
+// Transaction Routes
+const transactionsRouter = require('./routes/transactions');
+app.use('/transactions', transactionsRouter);
+
 // Start Server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

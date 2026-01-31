@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'book_detail_screen.dart';
 
 class RecommendationsScreen extends StatelessWidget {
   const RecommendationsScreen({super.key});
@@ -23,14 +24,14 @@ class RecommendationsScreen extends StatelessWidget {
               context,
               'Brave New World',
               'Aldous Huxley',
-              'A futuristic society where citizens are genetically bred and conditioned.',
+              'A futuristic society where citizens are genetically bred and conditioned to perform labor and are happy with their predetermined role. The story follows a natural-born man who challenges this dystopian world.',
               'https://upload.wikimedia.org/wikipedia/en/6/62/BraveNewWorld_FirstEdition.jpg',
             ),
             _buildRecCard(
               context,
               'Fahrenheit 451',
               'Ray Bradbury',
-              'A future where books are outlawed and firemen burn them.',
+              'A future American society where books are outlawed and "firemen" burn any that are found. The story traces the evolution of Guy Montag, a fireman who starts to question his task.',
               'https://upload.wikimedia.org/wikipedia/en/d/db/Fahrenheit_451_1st_ed_cover.jpg',
             ),
              const SizedBox(height: 24),
@@ -43,7 +44,7 @@ class RecommendationsScreen extends StatelessWidget {
               context,
               'Pride and Prejudice',
               'Jane Austen',
-              'A romantic novel of manners.',
+              'A romantic novel of manners written by Jane Austen in 1813. The novel follows the character development of Elizabeth Bennet, the dynamic protagonist of the book who learns about the repercussions of hasty judgments.',
               'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/PrideAndPrejudiceTitlePage.jpg/800px-PrideAndPrejudiceTitlePage.jpg',
             ),
           ],
@@ -77,7 +78,22 @@ class RecommendationsScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(onPressed: () {}, child: const Text("View Details")),
+                    child: TextButton(
+                        onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookDetailScreen(
+                                        title: title,
+                                        author: author,
+                                        description: desc,
+                                        imageUrl: imgUrl
+                                    )
+                                )
+                            );
+                        }, 
+                        child: const Text("View Details")
+                    ),
                   )
                 ],
               ),

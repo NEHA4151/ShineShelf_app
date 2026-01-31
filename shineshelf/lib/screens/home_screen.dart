@@ -158,10 +158,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         padding: EdgeInsets.zero,
                                         backgroundColor: Colors.deepPurple[100],
                                       ),
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Borrowed ${book.title}!')),
-                                        );
+                                      onPressed: () async {
+                                        final success = await Provider.of<BookProvider>(context, listen: false).borrowBook(book.id);
+                                        if (success) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Successfully borrowed ${book.title}! Check My Books.')),
+                                          );
+                                        } else {
+                                           ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Failed to borrow. Might be out of stock.')),
+                                          );
+                                        }
                                       },
                                       child: const Text('Borrow', style: TextStyle(fontSize: 12)),
                                     ),

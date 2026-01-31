@@ -5,6 +5,9 @@ class Book {
   final String? genre;
   final String? coverImageUrl;
   final String? description;
+  final String? issueDate;
+  final String? dueDate;
+  final double? fineAmount;
 
   Book({
     required this.id,
@@ -13,6 +16,9 @@ class Book {
     this.genre,
     this.coverImageUrl,
     this.description,
+    this.issueDate,
+    this.dueDate,
+    this.fineAmount,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
@@ -23,6 +29,9 @@ class Book {
       genre: json['genre'],
       coverImageUrl: json['cover_image_url'],
       description: json['description'],
+      issueDate: json['issue_date'],
+      dueDate: json['due_date'],
+      fineAmount: json['fine_amount'] != null ? double.parse(json['fine_amount'].toString()) : 0.0,
     );
   }
 }

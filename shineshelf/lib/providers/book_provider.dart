@@ -10,6 +10,9 @@ class BookProvider with ChangeNotifier {
   List<Book> get books => _books;
   bool get isLoading => _isLoading;
 
+  List<Book> _myBooks = [];
+  List<Book> get myBooks => _myBooks;
+
   Future<void> fetchBooks() async {
     _isLoading = true;
     notifyListeners();
@@ -22,6 +25,38 @@ class BookProvider with ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<bool> borrowBook(int bookId) async {
+    try {
+      await _apiService.post('/transactions/borrow', {'bookId': bookId});
+      await fetchMyBooks(); // Refresh my books
+      return true;
+    } catch (e) {
+      print('Borrow Error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> returnBook(int bookId) async {
+    try {
+      await _apiService.post('/transactions/return', {'bookId': bookId});
+      await fetchMyBooks(); // Refresh my books
+      return true;
+    } catch (e) {
+      print('Return Error: $e');
+      return false;
+    }
+  }
+
+  Future<void> fetchMyBooks() async {
+    try {
+      final List<dynamic> response = await _apiService.get('/transactions/my-books');
+      _myBooks = response.map((json) => Book.fromJson(json)).toList();
+      notifyListeners();
+    } catch (e) {
+      print('Fetch My Books Error: $e');
     }
   }
 }
