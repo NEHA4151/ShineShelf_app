@@ -59,4 +59,28 @@ class BookProvider with ChangeNotifier {
       print('Fetch My Books Error: $e');
     }
   }
+
+  Future<List<dynamic>> fetchReviews(int bookId) async {
+    try {
+      final List<dynamic> response = await _apiService.get('/reviews/$bookId');
+      return response;
+    } catch (e) {
+      print('Fetch Reviews Error: $e');
+      return [];
+    }
+  }
+
+  Future<bool> addReview(int bookId, double rating, String comment) async {
+    try {
+      await _apiService.post('/reviews', {
+        'bookId': bookId,
+        'rating': rating,
+        'comment': comment,
+      });
+      return true;
+    } catch (e) {
+      print('Add Review Error: $e');
+      return false;
+    }
+  }
 }

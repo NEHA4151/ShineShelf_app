@@ -95,7 +95,35 @@ router.post('/return', authenticateToken, async (req, res) => {
             ['available', transaction.inventory_id]
         );
 
-        res.json({ message: 'Book returned successfully!', fine });
+        // 4. BADGE LOGIC: Check total books read
+        const booksReadResult = await pool.query(
+            'SELECT COUNT(*) FROM transactions WHERE user_id = $1 AND return_date IS NOT NULL',
+            [userId]
+        );
+        const count = parseInt(booksReadResult.rows[0].count);
+
+        // Define triggers
+        let badgeTrigger = null;
+        if (count === 1) badgeTrigger = 'read_1';
+        else if (count === 5) badgeTrigger = 'read_5';
+        else if (count === 10) badgeTrigger = 'read_10';
+        else if (count === 20) badgeTrigger = 'read_20';
+
+        let newBadge = null;
+        if (badgeTrigger) {
+            const badgeRes = await pool.query('SELECT id, name FROM badges WHERE trigger_logic = $1', [badgeTrigger]);
+            if (badgeRes.rows.length > 0) {
+                const badge = badgeRes.rows[0];
+                // Check if already has badge
+                const hasBadge = await pool.query('SELECT 1 FROM user_badges WHERE user_id = $1 AND badge_id = $2', [userId, badge.id]);
+                if (hasBadge.rows.length === 0) {
+                    await pool.query('INSERT INTO user_badges (user_id, badge_id) VALUES ($1, $2)', [userId, badge.id]);
+                    newBadge = badge.name;
+                }
+            }
+        }
+
+        res.json({ message: 'Book returned successfully!', fine, newBadge });
 
     } catch (err) {
         console.error(err);

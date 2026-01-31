@@ -5,6 +5,8 @@ import '../providers/book_provider.dart';
 import '../providers/theme_provider.dart';
 import 'my_books_screen.dart';
 import 'community_screen.dart';
+import 'badges_screen.dart';
+import 'book_detail_screen.dart';
 import 'recommendations_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,6 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+             ListTile(
+              leading: const Icon(Icons.emoji_events),
+              title: const Text('My Badges'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BadgesScreen()),
+                );
+              },
+            ),
             const Divider(),
             SwitchListTile(
               title: const Text('Dark Mode'),
@@ -115,115 +128,118 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: bookProvider.books.length,
                   itemBuilder: (ctx, i) {
                     final book = bookProvider.books[i];
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // 1. Full Bleed Image
-                          Expanded(
-                            flex: 4, 
-                            child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                    book.coverImageUrl != null
-                                    ? Image.network(
-                                        book.coverImageUrl!, 
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (c, e, s) => Container(
+                    return GestureDetector(
+                      onTap: () {
+                         Navigator.push(context, MaterialPageRoute(builder: (_) => BookDetailScreen(book: book)));
+                      },
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // 1. Full Bleed Image
+                            Expanded(
+                              flex: 4, 
+                              child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                      book.coverImageUrl != null
+                                      ? Image.network(
+                                          book.coverImageUrl!, 
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (c, e, s) => Container(
+                                            color: Colors.grey[800],
+                                            child: const Icon(Icons.book, size: 50, color: Colors.white54),
+                                          ),
+                                        )
+                                      : Container(
                                           color: Colors.grey[800],
                                           child: const Icon(Icons.book, size: 50, color: Colors.white54),
                                         ),
-                                      )
-                                    : Container(
-                                        color: Colors.grey[800],
-                                        child: const Icon(Icons.book, size: 50, color: Colors.white54),
-                                      ),
-                                    // Gradient overlay for better text readability if we put text on image, 
-                                    // but we are putting text below. 
-                                ]
-                            )
-                          ),
-                          // 2. Details Section
-                          Expanded(
-                            flex: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    book.title, 
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold, 
-                                        fontSize: 14,
-                                        color: isDark ? Colors.white : Colors.black87
-                                    ), 
-                                    maxLines: 1, 
-                                    overflow: TextOverflow.ellipsis
-                                  ),
-                                  Text(
-                                    book.author, 
-                                    style: TextStyle(
-                                        color: isDark ? Colors.grey[400] : Colors.grey[700], 
-                                        fontSize: 12
-                                    ),
-                                    maxLines: 1,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Expanded(
-                                    child: Text(
-                                      book.description ?? 'No description.',
+                                  ]
+                              )
+                            ),
+                            // 2. Details Section
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      book.title, 
                                       style: TextStyle(
-                                          fontSize: 11,
-                                          color: isDark ? Colors.grey[300] : Colors.black54
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.bold, 
+                                          fontSize: 14,
+                                          color: isDark ? Colors.white : Colors.black87
+                                      ), 
+                                      maxLines: 1, 
+                                      overflow: TextOverflow.ellipsis
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  // 3. Borrow Button
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 36,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                        backgroundColor: isDark ? Colors.deepPurple[200] : Colors.deepPurple,
-                                        foregroundColor: isDark ? Colors.black : Colors.white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        elevation: 0,
+                                    Text(
+                                      book.author, 
+                                      style: TextStyle(
+                                          color: isDark ? Colors.grey[400] : Colors.grey[700], 
+                                          fontSize: 12
                                       ),
-                                      onPressed: () async {
-                                        final success = await Provider.of<BookProvider>(context, listen: false).borrowBook(book.id);
-                                        if (success) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                                content: Text('Successfully borrowed ${book.title}! Check My Books.'),
-                                                backgroundColor: Colors.green,
-                                            ),
-                                          );
-                                        } else {
-                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                                content: Text('Failed to borrow. Might be out of stock.'),
-                                                backgroundColor: Colors.red[400],
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: const Text('Borrow', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                      maxLines: 1,
                                     ),
-                                  )
-                                ],
+                                    const SizedBox(height: 6),
+                                    Expanded(
+                                      child: Text(
+                                        book.description ?? 'No description.',
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            color: isDark ? Colors.grey[300] : Colors.black54
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // 3. Borrow Button
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 36,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          backgroundColor: isDark ? Colors.deepPurple[200] : Colors.deepPurple,
+                                          foregroundColor: isDark ? Colors.black : Colors.white,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                          elevation: 0,
+                                        ),
+                                        onPressed: () async {
+                                          final success = await Provider.of<BookProvider>(context, listen: false).borrowBook(book.id);
+                                          if (success) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                  content: Text('Successfully borrowed ${book.title}! Check My Books.'),
+                                                  backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                          } else {
+                                             ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                  content: Text('Failed to borrow. Might be out of stock.'),
+                                                  backgroundColor: Colors.red[400],
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Borrow', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

@@ -53,6 +53,16 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<List<dynamic>> fetchMyBadges() async {
+    try {
+      final List<dynamic> response = await _apiService.get('/users/badges');
+      return response;
+    } catch (e) {
+      print('Fetch Badges Error: $e');
+      return [];
+    }
+  }
+
   Future<void> logout() async {
     await _apiService.logout();
     _user = null;

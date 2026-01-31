@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/book.dart';
 import 'book_detail_screen.dart';
 
 class RecommendationsScreen extends StatelessWidget {
@@ -80,15 +81,19 @@ class RecommendationsScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                         onPressed: () {
+                          // Create a dummy book for display logic
+                          // ID is 0, so reviews won't work on these dummy recommendations unless they exist in DB
+                          final dummyBook = Book(
+                            id: 0, 
+                            title: title, 
+                            author: author, 
+                            description: desc, 
+                            coverImageUrl: imgUrl
+                          );
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BookDetailScreen(
-                                        title: title,
-                                        author: author,
-                                        description: desc,
-                                        imageUrl: imgUrl
-                                    )
+                                    builder: (context) => BookDetailScreen(book: dummyBook)
                                 )
                             );
                         }, 
