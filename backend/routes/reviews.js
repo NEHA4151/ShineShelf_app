@@ -22,15 +22,15 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     try {
-        // Check if user already reviewed this book
-        const existingReview = await pool.query(
-            'SELECT id FROM reviews WHERE user_id = $1 AND book_id = $2',
-            [userId, bookId]
-        );
+        // Check if user already reviewed this book (REMOVED to allow multiple reviews)
+        // const existingReview = await pool.query(
+        //     'SELECT id FROM reviews WHERE user_id = $1 AND book_id = $2',
+        //     [userId, bookId]
+        // );
 
-        if (existingReview.rows.length > 0) {
-            return res.status(400).json({ error: 'You have already reviewed this book' });
-        }
+        // if (existingReview.rows.length > 0) {
+        //     return res.status(400).json({ error: 'You have already reviewed this book' });
+        // }
 
         await pool.query(
             'INSERT INTO reviews (user_id, book_id, rating, comment) VALUES ($1, $2, $3, $4)',

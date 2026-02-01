@@ -14,7 +14,17 @@ const pool = new Pool({
 // Get all books
 router.get('/', async (req, res) => {
     try {
-        const allBooks = await pool.query('SELECT * FROM books');
+        const query = `
+            SELECT 
+                b.*, 
+                COALESCE(AVG(r.rating), 0) as average_rating,
+                COUNT(DISTINCT r.id) as review_count,
+                (SELECT COUNT(*) FROM inventory i WHERE i.book_id = b.id AND i.status = 'available') as available_stock
+            FROM books b
+            LEFT JOIN reviews r ON b.id = r.book_id
+            GROUP BY b.id
+        `;
+        const allBooks = await pool.query(query);
         res.json(allBooks.rows);
     } catch (err) {
         console.error(err.message);

@@ -8,6 +8,9 @@ import 'community_screen.dart';
 import 'badges_screen.dart';
 import 'book_detail_screen.dart';
 import 'recommendations_screen.dart';
+import 'book_store_screen.dart';
+import 'cart_screen.dart';
+import '../providers/cart_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shineshelf Library'),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.jpg',
+              height: 32,
+              width: 32,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text('ShineShelf Library'),
+          ],
+        ),
       ),
       drawer: Drawer(
         child: ListView(
@@ -48,6 +62,17 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text('View Cart'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.recommend),
@@ -68,6 +93,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MyBooksScreen()),
+                );
+              },
+            ),
+             ListTile(
+              leading: const Icon(Icons.store),
+              title: const Text('Book Store'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BookStoreScreen()),
                 );
               },
             ),
@@ -189,6 +225,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                       maxLines: 1,
                                     ),
                                     const SizedBox(height: 6),
+                                    // Ratings & Stock
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.star, color: Colors.amber, size: 14),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            "${book.rating.toStringAsFixed(1)} (${book.reviewCount})", 
+                                            style: const TextStyle(fontSize: 12),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    if (book.stock == 0)
+                                      const Text(
+                                        "Out of Stock",
+                                        style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                                      ),
+
                                     Expanded(
                                       child: Text(
                                         book.description ?? 'No description.',
@@ -201,19 +257,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    // 3. Borrow Button
+                                    // 3. Borrow Button (Library Mode)
                                     SizedBox(
                                       width: double.infinity,
                                       height: 36,
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           padding: EdgeInsets.zero,
-                                          backgroundColor: isDark ? Colors.deepPurple[200] : Colors.deepPurple,
+                                          backgroundColor: book.stock == 0 ? Colors.grey : (isDark ? Colors.deepPurple[200] : Colors.deepPurple),
                                           foregroundColor: isDark ? Colors.black : Colors.white,
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                           elevation: 0,
                                         ),
-                                        onPressed: () async {
+                                        onPressed: book.stock == 0 ? null : () async {
                                           final success = await Provider.of<BookProvider>(context, listen: false).borrowBook(book.id);
                                           if (success) {
                                             ScaffoldMessenger.of(context).showSnackBar(
@@ -231,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             );
                                           }
                                         },
-                                        child: const Text('Borrow', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                        child: Text(book.stock == 0 ? 'Unavailable' : 'Borrow', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                                       ),
                                     )
                                   ],

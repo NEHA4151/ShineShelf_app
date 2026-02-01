@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS books (
     isbn VARCHAR(20) UNIQUE,
     publication_year INT,
     description TEXT,
-    cover_image_url VARCHAR(255)
+    cover_image_url VARCHAR(255),
+    price DECIMAL(10, 2) DEFAULT 19.99
 );
 
 -- Inventory Table (Physical Copies)

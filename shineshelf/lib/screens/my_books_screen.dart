@@ -106,21 +106,41 @@ class _MyBooksScreenState extends State<MyBooksScreen> {
                       // Return Button
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final success = await Provider.of<BookProvider>(context, listen: false).returnBook(book.id);
-                            if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Book returned successfully!')),
-                                );
-                            }
-                          },
-                          icon: const Icon(Icons.assignment_return),
-                          label: const Text('Return Book'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            foregroundColor: Colors.white,
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final success = await Provider.of<BookProvider>(context, listen: false).returnBook(book.id);
+                                  if (success) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Book returned successfully!')),
+                                      );
+                                  }
+                                },
+                                icon: const Icon(Icons.assignment_return, size: 16),
+                                label: const Text('Return', style: TextStyle(fontSize: 12)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepPurple,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () => _showReviewDialog(book.id),
+                                icon: const Icon(Icons.rate_review, size: 16),
+                                label: const Text('Review', style: TextStyle(fontSize: 12)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       )
                     ],
@@ -130,6 +150,67 @@ class _MyBooksScreenState extends State<MyBooksScreen> {
             },
           );
         },
+      ),
+    );
+  }
+
+  void _showReviewDialog(int bookId) {
+    double rating = 5.0;
+    final commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Write a Review'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+               const Text("Rate this book:"),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: List.generate(5, (index) {
+                   return IconButton(
+                     icon: Icon(
+                       index < rating ? Icons.star : Icons.star_border,
+                       color: Colors.amber,
+                       size: 32,
+                     ),
+                     onPressed: () {
+                       setState(() {
+                         rating = index + 1.0;
+                       });
+                     },
+                   );
+                 }),
+               ),
+               TextField(
+                 controller: commentController,
+                 decoration: const InputDecoration(labelText: 'Comment'),
+                 maxLines: 3,
+               ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                 final success = await Provider.of<BookProvider>(context, listen: false)
+                    .addReview(bookId, rating, commentController.text);
+                 Navigator.pop(ctx);
+                 if (success) {
+                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Review added!')));
+                 } else {
+                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add review.')));
+                 }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        ),
       ),
     );
   }
