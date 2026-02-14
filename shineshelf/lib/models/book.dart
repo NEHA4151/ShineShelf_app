@@ -40,7 +40,7 @@ class Book {
       author: json['author'],
       genre: json['genre'],
       isbn: json['isbn'],
-      publicationYear: json['publication_year'],
+      publicationYear: json['publication_year']?.toString(),
       coverImageUrl: json['cover_image_url'],
       description: json['description'],
       issueDate: json['issue_date'],

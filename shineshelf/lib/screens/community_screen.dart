@@ -8,29 +8,33 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-  // Simulating joined clubs in local state for now
-  final List<String> _joinedClubNames = [];
+  // Storing joined clubs with their join date
+  final Map<String, DateTime> _joinedClubs = {};
 
   final List<Map<String, String>> clubs = [
     {
       'name': 'The Classics Club',
       'description': 'Discussing timeless masterpieces every Friday.',
-      'members': '124 members'
+      'members': '124 members',
+      'created_at': '2023-01-15'
     },
     {
       'name': 'Sci-Fi Explorers',
       'description': 'Journey to other worlds with fellow sci-fi geeks.',
-      'members': '89 members'
+      'members': '89 members',
+      'created_at': '2023-03-10'
     },
     {
       'name': 'Mystery Solvers',
       'description': 'Can you figure out whodunnit before the last chapter?',
-      'members': '210 members'
+      'members': '210 members',
+      'created_at': '2022-11-05'
     },
     {
       'name': 'Non-Fiction Grow',
       'description': 'Learning and self-improvement together.',
-      'members': '56 members'
+      'members': '56 members',
+      'created_at': '2023-06-20'
     },
   ];
 
@@ -56,7 +60,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               itemCount: clubs.length,
               itemBuilder: (context, index) {
                 final club = clubs[index];
-                final isJoined = _joinedClubNames.contains(club['name']);
+                final isJoined = _joinedClubs.containsKey(club['name']);
 
                 return Card(
                   elevation: 3,
@@ -85,6 +89,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(club['description']!),
+                         const SizedBox(height: 4),
+                        Text(
+                          'Created: ${club['created_at']}',
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600], fontStyle: FontStyle.italic),
+                        ),
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
@@ -93,7 +102,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 ? null 
                                 : () {
                                     setState(() {
-                                      _joinedClubNames.add(club['name']!);
+                                      _joinedClubs[club['name']!] = DateTime.now();
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text('Joined ${club['name']}!')),
@@ -110,13 +119,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ),
 
             // Tab 2: My Clubs
-            _joinedClubNames.isEmpty
+            _joinedClubs.isEmpty
                 ? const Center(child: Text("You haven't joined any clubs yet."))
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: _joinedClubNames.length,
+                    itemCount: _joinedClubs.length,
                     itemBuilder: (context, index) {
-                      final clubName = _joinedClubNames[index];
+                      final clubName = _joinedClubs.keys.elementAt(index);
+                      final joinedDate = _joinedClubs[clubName];
                       // Find club details
                       final club = clubs.firstWhere((c) => c['name'] == clubName);
                       
@@ -140,7 +150,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
                               const SizedBox(height: 8),
                               Text(club['description']!),
                               const SizedBox(height: 8),
-                              const Text("Status: Member", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Status: Member", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                                  Text(
+                                    'Joined: ${joinedDate?.year}-${joinedDate?.month.toString().padLeft(2,'0')}-${joinedDate?.day.toString().padLeft(2,'0')}',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),

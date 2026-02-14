@@ -46,9 +46,9 @@ class _BookStoreScreenState extends State<BookStoreScreen> {
           : GridView.builder(
               padding: const EdgeInsets.all(10.0),
               itemCount: bookProvider.books.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.65, // Taller to fit price/buttons
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: MediaQuery.of(context).size.width > 1100 ? 4 : (MediaQuery.of(context).size.width > 800 ? 3 : 2),
+                childAspectRatio: 0.55,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),

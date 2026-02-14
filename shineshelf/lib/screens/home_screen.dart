@@ -155,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Center(child: Text("No books available in the library."))
               : GridView.builder(
                   padding: const EdgeInsets.all(12),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.60,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: MediaQuery.of(context).size.width > 1100 ? 4 : (MediaQuery.of(context).size.width > 800 ? 3 : 2),
+                    childAspectRatio: 0.55, // Adjusted to be taller to fix overflow
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                   ),
@@ -223,6 +223,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           fontSize: 12
                                       ),
                                       maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${book.genre ?? 'Unknown'} • ${book.publicationYear ?? 'N/A'}',
+                                      style: TextStyle(
+                                        color: isDark ? Colors.grey[500] : Colors.grey[600],
+                                        fontSize: 11,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 6),
                                     // Ratings & Stock

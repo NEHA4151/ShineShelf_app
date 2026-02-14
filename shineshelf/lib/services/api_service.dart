@@ -6,17 +6,25 @@ import 'dart:io' show Platform;
 
 class ApiService {
   // Use localhost for Web/Windows/iOS, 10.0.2.2 for Android Emulator
+  // Replace this with your computer's Wi-Fi IP Address (run 'ipconfig' to find it)
+  static const String _localPcIp = '172.20.32.137';
+
   static String get baseUrl {
     if (kIsWeb) {
-      return 'http://localhost:3000';
+      // Use localhost for Web
+      return 'http://localhost:3000'; 
     }
-    // Platform check is only safe to run if NOT on web
     try {
       if (Platform.isAndroid) {
-        return 'http://10.0.2.2:3000';
+        // '10.0.2.2' is for the Android Emulator.
+        // For physical device, use the PC's IP. 
+        // We will try the LAN IP first as it works for both if configured, 
+        // but '10.0.2.2' is safer for Emulators.
+        // Uncomment the one you need.
+        // return 'http://10.0.2.2:3000'; // Emulator
+        return 'http://$_localPcIp:3000'; // Physical Phone
       }
     } catch (e) {
-      // Fallback if Platform check fails
       return 'http://localhost:3000';
     }
     return 'http://localhost:3000';
