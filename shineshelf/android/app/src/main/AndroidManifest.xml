@@ -3,6 +3,8 @@
     <application
         android:label="shineshelf"
         android:name="${applicationName}"
+        android:callsIcon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

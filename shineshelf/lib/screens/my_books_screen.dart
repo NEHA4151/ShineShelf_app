@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/book_provider.dart';
 import 'package:intl/intl.dart';
+import '../widgets/book_cover_image.dart';
 
 class MyBooksScreen extends StatefulWidget {
   const MyBooksScreen({super.key});
@@ -74,9 +75,10 @@ class _MyBooksScreenState extends State<MyBooksScreen> {
                             width: 80,
                             height: 120,
                              color: Colors.grey[200],
-                             child: book.coverImageUrl != null
-                                ? Image.network(book.coverImageUrl!, fit: BoxFit.cover, errorBuilder: (c,e,s) => const Icon(Icons.book))
-                                : const Icon(Icons.book),
+                             child: BookCoverImage(
+                               imageUrl: book.coverImageUrl,
+                               fit: BoxFit.cover,
+                             ),
                           ),
                           const SizedBox(width: 16),
                           // Details

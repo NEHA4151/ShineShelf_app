@@ -7,7 +7,7 @@ import 'dart:io' show Platform;
 class ApiService {
   // Use localhost for Web/Windows/iOS, 10.0.2.2 for Android Emulator
   // Replace this with your computer's Wi-Fi IP Address (run 'ipconfig' to find it)
-  static const String _localPcIp = '172.20.32.137';
+  static const String _localPcIp = '172.20.32.170';
 
   static String get baseUrl {
     if (kIsWeb) {

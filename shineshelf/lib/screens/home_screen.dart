@@ -11,6 +11,7 @@ import 'recommendations_screen.dart';
 import 'book_store_screen.dart';
 import 'cart_screen.dart';
 import '../providers/cart_provider.dart';
+import '../widgets/book_cover_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -182,19 +183,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                      book.coverImageUrl != null
-                                      ? Image.network(
-                                          book.coverImageUrl!, 
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (c, e, s) => Container(
-                                            color: Colors.grey[800],
-                                            child: const Icon(Icons.book, size: 50, color: Colors.white54),
-                                          ),
-                                        )
-                                      : Container(
-                                          color: Colors.grey[800],
-                                          child: const Icon(Icons.book, size: 50, color: Colors.white54),
-                                        ),
+                                      BookCoverImage(
+                                        imageUrl: book.coverImageUrl,
+                                        fit: BoxFit.cover,
+                                      )
                                   ]
                               )
                             ),

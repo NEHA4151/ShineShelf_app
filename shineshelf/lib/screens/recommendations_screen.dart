@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import 'book_detail_screen.dart';
+import '../widgets/book_cover_image.dart';
 
 class RecommendationsScreen extends StatelessWidget {
   const RecommendationsScreen({super.key});
@@ -64,7 +65,10 @@ class RecommendationsScreen extends StatelessWidget {
             width: 80,
             height: 120,
             color: Colors.grey[200],
-            child: Image.network(imgUrl, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) => const Icon(Icons.book)),
+            child: BookCoverImage(
+              imageUrl: imgUrl,
+              fit: BoxFit.cover,
+            ),
           ),
           Expanded(
             child: Padding(

@@ -4,6 +4,7 @@ import '../providers/book_provider.dart';
 import '../providers/cart_provider.dart';
 import '../models/book.dart';
 import 'cart_screen.dart';
+import '../widgets/book_cover_image.dart';
 
 class BookDetailScreen extends StatefulWidget {
   final Book book;
@@ -116,9 +117,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5)),
                   ],
                 ),
-                child: widget.book.coverImageUrl != null
-                    ? Image.network(widget.book.coverImageUrl!, fit: BoxFit.cover)
-                    : const Icon(Icons.book, size: 100),
+                child: BookCoverImage(
+                  imageUrl: widget.book.coverImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 24),

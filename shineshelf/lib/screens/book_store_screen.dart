@@ -4,6 +4,7 @@ import '../providers/book_provider.dart';
 import '../providers/cart_provider.dart';
 import 'cart_screen.dart';
 import 'book_detail_screen.dart';
+import '../widgets/book_cover_image.dart';
 
 class BookStoreScreen extends StatefulWidget {
   const BookStoreScreen({super.key});
@@ -72,9 +73,10 @@ class _BookStoreScreenState extends State<BookStoreScreen> {
                         Expanded(
                           child: ClipRRect(
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                            child: book.coverImageUrl != null
-                                ? Image.network(book.coverImageUrl!, fit: BoxFit.cover)
-                                : const Icon(Icons.book, size: 50),
+                            child: BookCoverImage(
+                              imageUrl: book.coverImageUrl,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Padding(
